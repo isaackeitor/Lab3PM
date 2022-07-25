@@ -2,7 +2,7 @@
 data class ItemData(
     var originalPos: Int,
     var originalValue: Any,
-	var type: String? = null,
+    var type: String? = null,
     var info: String? = null
 )
 // -----------------------
@@ -12,49 +12,38 @@ data class ItemData(
  */
 
 fun main() {
-    val result = processList(listOf(20, 25, 2, 7, "hola", "", true, false, null, 2.0))
-    println(result)
+    val result = processList ( listOf ( 20, 25, 2, 7, "hola", "", true, false, null, 2.0 ) )
+    println ( result )
 }
 
-fun processList(inputList: List<Any?>?): List<ItemData>? {
+fun processList( inputList: List<Any?>? ): List<ItemData>? {
     val exitList = ArrayList<ItemData>()
-    if(inputList.isNullOrEmpty()){
-        return when(inputList){
+    if( inputList.isNullOrEmpty() ) {
+        return when( inputList ) {
             null -> null
             else -> exitList  
         }
     } else {
-        for (index in inputList.indices) {
-           	 if(inputList[index] != null){
-                 exitList.add(ItemData(index, inputList[index]!!, objectType(inputList[index]!!),objectInfo(inputList[index]!!)))
-             }
+        inputList.forEachIndexed { index, obj ->
+            if( obj != null ) {
+                when( obj ) {
+                    is String -> exitList.add( ItemData ( index, obj, "cadena", "L${obj.length}" ) )
+                    is Int -> exitList.add( ItemData( index, obj, "entero", objectInfo(obj) ) )
+                    is Boolean -> exitList.add( ItemData( index, obj, "booleano", if ( obj == true ) "Verdadero" else "Falso" ) )
+                    else -> exitList.add( ItemData( index, obj, null, null ) )
+                }
+            }
         }
-    }
-
     return exitList
-}
-
-fun objectType (myAnyTypeElement: Any): String?{
-    return when (myAnyTypeElement){
-        is String -> "cadena"
-		is Int -> "entero"
-		is Boolean -> "booleano"
-		else -> null
     }
 }
 
-fun objectInfo(myAnyTypeElement: Any): String?{
-    return when (myAnyTypeElement){
-        is String -> return  "L" + myAnyTypeElement.length
+fun objectInfo( myAnyTypeElement: Any ): String? {
+    return when ( myAnyTypeElement ) {
         is Int -> return when {
             myAnyTypeElement % 10 == 0 -> "M10"
             myAnyTypeElement % 5 == 0 -> "M5"
             myAnyTypeElement % 2 == 0 -> "M2"
-           else -> null
-        }
-        is Boolean -> return when{
-            myAnyTypeElement == true -> "Verdadero" 
-            myAnyTypeElement == false -> "Falso" 
             else -> null
         }
         else -> null
